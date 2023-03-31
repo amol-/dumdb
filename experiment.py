@@ -42,7 +42,7 @@ def main():
 
 def table_provider(table_name):
     filename = f"{table_name[0]}.parquet"
-    print("LOADING TABLE", filename)
+    print("LOADING TABLE:", filename)
     table = pyarrow.parquet.read_table(filename)
     return table
 
