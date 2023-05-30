@@ -26,7 +26,7 @@ def main():
         table_name, _ = os.path.splitext(os.path.basename(pqtfile))
         table_schema = pyarrow.parquet.read_schema(pqtfile)
         catalog[table_name] = sch.schema(table_schema)
-    print("CATALOG", list(catalog.keys()))
+    # print("CATALOG", list(catalog.keys()))
 
     # Parse the query to Substrait
     q = ibis.expr.sql.parse_sql(opts.query, catalog=catalog)
@@ -37,10 +37,11 @@ def main():
     result = pyarrow.substrait.run_query(pyarrow.py_buffer(plan.SerializeToString()), 
                                          table_provider=table_provider)
     result_table = result.read_all()
+    print("")
     print(result_table.to_pandas())
 
 
-def table_provider(table_name):
+def table_provider(table_name, *_):
     filename = f"{table_name[0]}.parquet"
     print("LOADING TABLE:", filename)
     table = pyarrow.parquet.read_table(filename)
